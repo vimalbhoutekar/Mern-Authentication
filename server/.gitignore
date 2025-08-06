@@ -1,0 +1,49 @@
+# Node.js dependencies (both frontend & backend)
+node_modules/
+
+# Build files
+dist/
+build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# dotenv environment files (important!)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE settings
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Optional: coverage reports from testing
+coverage/
+
+# Optional: next.js or vercel config if used
+.next/
+.vercel/
+
+# MongoDB dump files (if any)
+dump/
+
+# Other files
+*.log
+*.tgz
+
+# React specific (if frontend is in a subfolder)
+**/node_modules/
+**/build/
+
+# Optional: macOS metadata
+*.DS_Store
