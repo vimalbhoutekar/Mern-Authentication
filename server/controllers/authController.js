@@ -40,3 +40,39 @@ export const register  = async (req,res) =>
     }
 
 }
+
+export  const login = async (req, res) =>
+{
+    const { email, password } = req.body;
+    if(!email || !password) {
+        return res.status(400).json({ success: false, message: "Email and password are required" });
+    }
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ success: false, message: "Invalid email " });
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(400).json({ success: false, message: "Invalid password" });
+        }
+
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+            expiresIn: "1h"
+        });
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+            maxAge: 3600000 // 1 hour
+        });
+
+        return res.status(200).json({ success: true, message: "Login successful" });
+    } catch (error) {
+        console.error("Error in login:", error);
+        return res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+}
