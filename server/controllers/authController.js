@@ -1,0 +1,42 @@
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import User from "../models/userModel.js";
+
+export const register  = async (req,res) =>
+{
+    const { name, email, password } = req.body;
+    if(!name || !email || !password) {
+        return res.status(400).json({success: false, message: "Please fill all the fields" });
+    }
+
+    try{
+        const existingUser = await User.findOne({ email });
+
+        if (existingUser) {
+            return res.status(400).json({ success: false, message: "User already exists" });
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = new User({ name, email, password: hashedPassword });
+        await newUser.save();
+
+        const token = jwt.sign({id : newUser._id}, process.env.JWT_SECRET, {
+            expiresIn: "1h"
+        });
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+            maxAge: 3600000 // 1 hour
+        });
+
+
+
+        return res.status(201).json({ success: true, message: "User registered successfully" });
+    }
+    catch(error) {
+        console.error("Error in registration:", error);
+        return res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+
+}
