@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 import getTransporter from "../config/nodemailer.js";
-import getWelcomeEmailTemplate from "../utils/emailTemplates.js";
+import { getWelcomeEmailTemplate, getVerificationEmailTemplate } from "../utils/emailTemplates.js";
 
 export const register = async (req, res) => {
     const { name, email, password } = req.body;
@@ -105,7 +105,10 @@ export const logout = async (req, res) => {
 export const sendVerifyOtp = async (req, res) => {
     try {
         const { userId } = req.body;
-        const user = User.findById(userId);
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
         if (user.isAccountVerified) {
             return res.status(400).json({ success: false, message: "Account already verified" });
         }
@@ -117,9 +120,10 @@ export const sendVerifyOtp = async (req, res) => {
         const mailOptions = {
             from: process.env.SENDER_EMAIL,
             to: user.email,
-            subject: "Verify Your Account",
-            html: `<p>Your verification OTP is <strong>${otp}</strong>. It is valid for 10 minutes.</p>`
+            subject: "🔐 Verify Your Account - OTP Code Inside",
+            html: getVerificationEmailTemplate(otp)
         };
+
         const transporter = getTransporter();
         await transporter.sendMail(mailOptions);
         return res.status(200).json({ success: true, message: "Verification OTP sent successfully" });
@@ -131,22 +135,21 @@ export const sendVerifyOtp = async (req, res) => {
 
 export const verifyEmail = async (req, res) => {
     const { userId, otp } = req.body;
-    if(!userId || !otp) {
+    if (!userId || !otp) {
         return res.status(400).json({ success: false, message: "Missing Details" });
-    }   
+    }
 
-    try{
+    try {
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found" });
         }
-        if(user.verifyOtp === "" || user.verifyOtp !== otp)
-        {
+        if (user.verifyOtp === "" || user.verifyOtp !== otp) {
             return res.status(400).json({ success: false, message: "Invalid OTP" });
         }
         if (user.verifyOtpExpireAt < Date.now()) {
             return res.status(400).json({ success: false, message: "OTP expired" });
-        }   
+        }
         user.isAccountVerified = true;
         user.verifyOtp = "";
         user.verifyOtpExpireAt = 0;
@@ -157,7 +160,7 @@ export const verifyEmail = async (req, res) => {
     catch (error) {
         console.error("Error in verifying email:", error);
         return res.status(500).json({ success: false, message: "Internal Server Error" });
-    }   
+    }
 
 }
 
