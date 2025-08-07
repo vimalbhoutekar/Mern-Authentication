@@ -1,15 +1,16 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
+import getTransporter from "../config/nodemailer.js";
+import getWelcomeEmailTemplate from "../utils/emailTemplates.js";
 
-export const register  = async (req,res) =>
-{
+export const register = async (req, res) => {
     const { name, email, password } = req.body;
-    if(!name || !email || !password) {
-        return res.status(400).json({success: false, message: "Please fill all the fields" });
+    if (!name || !email || !password) {
+        return res.status(400).json({ success: false, message: "Please fill all the fields" });
     }
 
-    try{
+    try {
         const existingUser = await User.findOne({ email });
 
         if (existingUser) {
@@ -19,7 +20,7 @@ export const register  = async (req,res) =>
         const newUser = new User({ name, email, password: hashedPassword });
         await newUser.save();
 
-        const token = jwt.sign({id : newUser._id}, process.env.JWT_SECRET, {
+        const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
             expiresIn: "1h"
         });
 
@@ -30,21 +31,30 @@ export const register  = async (req,res) =>
             maxAge: 3600000 // 1 hour
         });
 
+        // Sending Welcome Email 
+        const transporter = getTransporter();
 
+        const mailOptions = {
+            from: process.env.SENDER_EMAIL,
+            to: email,
+            subject: "🎉 Welcome to MERN Auth - Your Account is Ready!",
+            html: getWelcomeEmailTemplate(name, email)
+        };
+
+        await transporter.sendMail(mailOptions);
 
         return res.status(201).json({ success: true, message: "User registered successfully" });
     }
-    catch(error) {
+    catch (error) {
         console.error("Error in registration:", error);
         return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 
 }
 
-export  const login = async (req, res) =>
-{
+export const login = async (req, res) => {
     const { email, password } = req.body;
-    if(!email || !password) {
+    if (!email || !password) {
         return res.status(400).json({ success: false, message: "Email and password are required" });
     }
 
