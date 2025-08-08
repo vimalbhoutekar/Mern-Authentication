@@ -34,11 +34,13 @@ export const register = async (req, res) => {
         // Sending Welcome Email 
         const transporter = getTransporter();
 
+        console.log("welcome email : ", getWelcomeEmailTemplate(name, email));
+
         const mailOptions = {
             from: process.env.SENDER_EMAIL,
             to: email,
-            subject: "🎉 Welcome to MERN Auth - Your Account is Ready!",
-            html: getWelcomeEmailTemplate(name, email)
+            subject: "🎉 Welcome to MERN Authentication System!",
+            html: getWelcomeEmailTemplate(name, email),
         };
 
         await transporter.sendMail(mailOptions);
@@ -120,7 +122,7 @@ export const sendVerifyOtp = async (req, res) => {
         const mailOptions = {
             from: process.env.SENDER_EMAIL,
             to: user.email,
-            subject: "🔐 Verify Your Account - OTP Code Inside",
+            subject: "🔐 Verify Your Account - Security Code Inside",
             html: getVerificationEmailTemplate(otp)
         };
 
