@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 import getTransporter from "../config/nodemailer.js";
-import { getWelcomeEmailTemplate, getVerificationEmailTemplate } from "../utils/emailTemplates.js";
+import { getWelcomeEmailTemplate, getVerificationEmailTemplate, getPasswordResetEmailTemplate } from "../utils/emailTemplates.js";
 
 export const register = async (req, res) => {
     const { name, email, password } = req.body;
@@ -211,3 +211,4 @@ export const sendResetOtp = async (req,res) =>
         return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 }
+
