@@ -175,3 +175,39 @@ export const isAuthenticated = (req, res) => {
         return res.status(401).json({ success: false, message: "Unauthorized" });
     }
 };
+
+// Send Password Reset OTP 
+export const sendResetOtp = async (req,res) =>
+{
+    const {email} = req.body;
+    if(!email)
+    {
+        return res.status(400).json({success:false,message:"Email is required"});
+    }
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        user.resetOtp = otp;
+        user.resetOtpExpireAt = Date.now() + 10 * 60 * 1000; // OTP valid for 10 minutes
+        await user.save();
+
+        const mailOptions = {
+            from: process.env.SENDER_EMAIL,
+            to: user.email,
+            subject: "🔒 Password Reset OTP",
+            html: getPasswordResetEmailTemplate(otp)
+        };
+
+        const transporter = getTransporter();
+        await transporter.sendMail(mailOptions);
+        return res.status(200).json({ success: true, message: "Password reset OTP sent successfully" });
+    } catch (error) {
+        console.error("Error in sending password reset OTP:", error);
+        return res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+}
