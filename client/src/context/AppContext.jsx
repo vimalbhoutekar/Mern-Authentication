@@ -13,5 +13,6 @@ export const AppContextProvider = ({ children }) => {
     userData,
     setUserData
   };
-  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+  return <AppContext.Provider value={value}>{children}
+  </AppContext.Provider>;
 };
