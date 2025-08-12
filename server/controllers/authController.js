@@ -34,8 +34,6 @@ export const register = async (req, res) => {
         // Sending Welcome Email 
         const transporter = getTransporter();
 
-        console.log("welcome email : ", getWelcomeEmailTemplate(name, email));
-
         const mailOptions = {
             from: process.env.SENDER_EMAIL,
             to: email,
@@ -48,7 +46,6 @@ export const register = async (req, res) => {
         return res.status(201).json({ success: true, message: "User registered successfully" });
     }
     catch (error) {
-        console.error("Error in registration:", error);
         return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 
@@ -84,7 +81,6 @@ export const login = async (req, res) => {
 
         return res.status(200).json({ success: true, message: "Login successful" });
     } catch (error) {
-        console.error("Error in login:", error);
         return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 }
@@ -98,7 +94,6 @@ export const logout = async (req, res) => {
         });
         return res.status(200).json({ success: true, message: "Logout successful" });
     } catch (error) {
-        console.error("Error in logout:", error);
         return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 }
@@ -130,7 +125,6 @@ export const sendVerifyOtp = async (req, res) => {
         await transporter.sendMail(mailOptions);
         return res.status(200).json({ success: true, message: "Verification OTP sent successfully" });
     } catch (error) {
-        console.error("Error in sending verification OTP:", error);
         return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 }
@@ -160,7 +154,6 @@ export const verifyEmail = async (req, res) => {
         return res.status(200).json({ success: true, message: "Email verified successfully" });
     }
     catch (error) {
-        console.error("Error in verifying email:", error);
         return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 
@@ -207,7 +200,6 @@ export const sendResetOtp = async (req,res) =>
         await transporter.sendMail(mailOptions);
         return res.status(200).json({ success: true, message: "Password reset OTP sent successfully" });
     } catch (error) {
-        console.error("Error in sending password reset OTP:", error);
         return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 }
@@ -240,7 +232,6 @@ export const resetPassword = async (req,res) =>
 
         return res.status(200).json({ success: true, message: "Password reset successfully" });
     } catch (error) {
-        console.error("Error in resetting password:", error);
         return res.status(500).json({ success: false, message: "Internal Server Error" });
     }  
 }
