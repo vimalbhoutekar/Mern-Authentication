@@ -14,6 +14,16 @@ export const AppContextProvider = ({ children }) => {
     const [isLoggedin,setIsLoggedin] = useState(false);
     const [userData,setUserData] = useState(null);
 
+    const getUserData = async () =>
+    {
+      try {
+        const { data } = await axios.get(`${backendUrl}/api/user/data`);
+        data.success ? setUserData(data.userData) : toast.error(data.message);
+      } catch (error) {
+        toast.error(error.message);
+      }
+    }
+
     const getAuthStatus = async () => {
       try {
         const { data } = await axios.get(`${backendUrl}/api/auth/is-auth`);
@@ -26,19 +36,10 @@ export const AppContextProvider = ({ children }) => {
           setUserData(null);
         }
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error);
       }
     };
 
-    const getUserData = async () =>
-    {
-      try {
-        const { data } = await axios.get(`${backendUrl}/api/user/data`);
-        data.success ? setUserData(data.userData) : toast.error(data.message);
-      } catch (error) {
-        toast.error(error.message);
-      }
-    }
 
     useEffect(() => {
       getAuthStatus();

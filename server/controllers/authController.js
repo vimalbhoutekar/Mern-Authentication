@@ -21,14 +21,14 @@ export const register = async (req, res) => {
         await newUser.save();
 
         const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
-            expiresIn: "1h"
+            expiresIn: "1d"
         });
 
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-            maxAge: 3600000 // 1 hour
+            maxAge: 24 * 60 * 60 * 1000 // 1 day
         });
 
         // Sending Welcome Email 
@@ -72,14 +72,14 @@ export const login = async (req, res) => {
         }
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-            expiresIn: "1h"
+            expiresIn: "1d"
         });
 
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-            maxAge: 3600000 // 1 hour
+            maxAge: 24 * 60 * 60 * 1000 // 1 day
         });
 
         return res.status(200).json({ success: true, message: "Login successful" });

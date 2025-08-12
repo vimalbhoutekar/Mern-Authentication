@@ -7,56 +7,47 @@ import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
-  const {backendUrl,setIsLoggedin,getUserData} = useContext(AppContext);
+  axios.defaults.withCredentials = true;
+  const { backendUrl, setIsLoggedin, getUserData } = useContext(AppContext);
   const [state, setState] = useState("Sign Up");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const onSubmitHandler = async (e) => {
-    try{
+    try {
       e.preventDefault();
-      axios.defaults.withCredentials = true;
-      if(state === "Sign Up")
-      {
-       const {data} = await axios.post(`${backendUrl}/api/auth/register`, {
+
+      if (state === "Sign Up") {
+        const { data } = await axios.post(`${backendUrl}/api/auth/register`, {
           name,
           email,
-          password
+          password,
         });
-        if(data.success)
-        {
+        if (data.success) {
           setIsLoggedin(true);
-          console.log("User registered successfully", data);
           getUserData();
+          toast.success(data.message);
           navigate("/");
-        }
-        else
-        {
+        } else {
           toast.error(data.message);
         }
-      }
-      else
-      {
-        const {data} = await axios.post(`${backendUrl}/api/auth/login`, {
+      } else {
+        const { data } = await axios.post(`${backendUrl}/api/auth/login`, {
           email,
-          password
+          password,
         });
-        if(data.success)
-        {
+        if (data.success) {
           setIsLoggedin(true);
           getUserData();
+          toast.success(data.message);
           navigate("/");
-        }
-        else
-        {
+        } else {
           toast.error(data.message);
         }
       }
-
-    }
-    catch (error) {
-     toast.error(error.message);
+    } catch (error) {
+      toast.error(error.message);
     }
   };
 
