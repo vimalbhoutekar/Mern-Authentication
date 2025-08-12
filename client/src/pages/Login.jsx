@@ -76,7 +76,7 @@ const Login = () => {
             type="submit"
             className="w-full py-2.5 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-900 text-white font-medium"
           >
-            Create Account
+            {state === "Sign Up" ? "Create Account" : "Login"}
           </button>
         </form>
         {state === "Sign Up" ? (
