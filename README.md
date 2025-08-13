@@ -4,7 +4,7 @@
 
 ## 🌐 Live Demo
 
-**[🚀 Try the Live Application](https://your-demo-url.com)**
+**[🚀 Try the Live Application](https://mern-authentication-frontend-psns.onrender.com/)**
 
 Experience the complete authentication system in action. The demo includes all features: user registration, email verification, secure login, and password reset functionality.
 
