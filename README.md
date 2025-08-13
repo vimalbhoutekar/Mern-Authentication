@@ -18,24 +18,29 @@ Experience the complete authentication system in action. The demo includes all f
 ## 📸 Application Screenshots
 
 ### User Registration Interface
-![Registration Page](./screenshots/registration.png)
+<img width="1868" height="910" alt="image" src="https://github.com/user-attachments/assets/89ac87a4-3720-44b9-a38e-e7bc2cccd70e" />
+
 *Clean and intuitive registration form with real-time validation*
 
 ### Secure Login Experience  
-![Login Page](./screenshots/login.png)
+<img width="1834" height="840" alt="image" src="https://github.com/user-attachments/assets/a14927fa-0150-4a94-81b9-7453c89edd15" />
+<img width="1900" height="908" alt="image" src="https://github.com/user-attachments/assets/4afe9c35-ca9f-45dd-8cf3-2707f0ae69e2" />
+
+
 *Professional login interface with error handling and loading states*
 
 ### Email Verification Process
-![Email Verification](./screenshots/email-verify.png)
+<img width="1826" height="811" alt="image" src="https://github.com/user-attachments/assets/fa356e94-e6df-41c2-8873-87c4f944c6bd" />
+<img width="1870" height="791" alt="image" src="https://github.com/user-attachments/assets/79a417ab-a3df-497f-9c97-3e6da3f75d26" />
+
+
 *Seamless email verification with clear user feedback*
 
 ### Password Reset Functionality
-![Password Reset](./screenshots/password-reset.png)
-*Secure password recovery with time-limited token validation*
+<img width="1748" height="835" alt="image" src="https://github.com/user-attachments/assets/248df7a3-bc85-46fb-8422-e300da7d4840" />
+<img width="1870" height="853" alt="image" src="https://github.com/user-attachments/assets/87970f5b-8508-40fd-a846-29bbf53dcca7" />
+<img width="1784" height="813" alt="image" src="https://github.com/user-attachments/assets/9732aefc-6c20-4940-8860-48f0777126a1" />
 
-### Protected Dashboard
-![User Dashboard](./screenshots/dashboard.png)
-*Authenticated user interface demonstrating protected content access*
 
 
 ## 🌟 System Overview
