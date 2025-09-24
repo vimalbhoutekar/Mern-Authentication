@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { assets } from "../assets/assets";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -24,6 +24,7 @@ const Login = () => {
           email,
           password,
         });
+        console.log(data);
         if (data.success) {
           setIsLoggedin(true);
           getUserData();
@@ -33,7 +34,8 @@ const Login = () => {
           toast.error(data.message);
         }
       } else {
-        const { data } = await axios.post(`${backendUrl}/api/auth/login`, {
+
+        const  {data}  = await axios.post(`${backendUrl}/api/auth/login`, {
           email,
           password,
         });
@@ -47,7 +49,7 @@ const Login = () => {
         }
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error?.response?.data?.message);
     }
   };
 
