@@ -13,19 +13,24 @@ export const AppContextProvider = ({ children }) => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const [isLoggedin,setIsLoggedin] = useState(false);
     const [userData,setUserData] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const getUserData = async () =>
     {
       try {
+        setIsLoading(true);
         const { data } = await axios.get(`${backendUrl}/api/user/data`);
         data.success ? setUserData(data.userData) : toast.error(data.message);
       } catch (error) {
         toast.error(error.message);
+      } finally {
+        setIsLoading(false);
       }
     }
 
     const getAuthStatus = async () => {
       try {
+        setIsLoading(true);
         const { data } = await axios.get(`${backendUrl}/api/auth/is-auth`);
         if (data.success) {
           setIsLoggedin(true);
@@ -37,6 +42,8 @@ export const AppContextProvider = ({ children }) => {
         }
       } catch (error) {
         toast.error(error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -51,7 +58,8 @@ export const AppContextProvider = ({ children }) => {
     setIsLoggedin,
     userData,
     setUserData,
-    getUserData
+    getUserData,
+    isLoading
   };
   return <AppContext.Provider value={value}>{children}
   </AppContext.Provider>;

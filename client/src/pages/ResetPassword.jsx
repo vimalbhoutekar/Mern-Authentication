@@ -18,6 +18,9 @@ const ResetPassword = () => {
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [otp, setOtp] = useState("");
   const [isOtpVerified, setIsOtpVerified] = useState(false);
+  const [isEmailLoading, setIsEmailLoading] = useState(false);
+  const [isOtpLoading, setIsOtpLoading] = useState(false);
+  const [isResetLoading, setIsResetLoading] = useState(false);
 
   const inputRefs = useRef([]);
 
@@ -47,6 +50,7 @@ const ResetPassword = () => {
   const onSubmitNewPassword = async (e) => {
     e.preventDefault();
     try {
+      setIsResetLoading(true);
       const {data} = await axios.post(`${backendUrl}/api/auth/reset-password`, { email, newPassword, otp });
       if (data.success) {
         toast.success(data.message);
@@ -55,7 +59,9 @@ const ResetPassword = () => {
         toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error?.response?.data?.message);
+    } finally {
+      setIsResetLoading(false);
     }
   }
 
@@ -63,6 +69,7 @@ const ResetPassword = () => {
   {
     e.preventDefault();
     try {
+      setIsEmailLoading(true);
       const {data} = await axios.post(`${backendUrl}/api/auth/send-reset-otp`, { email });
       if (data.success) {
         setIsEmailSent(true);
@@ -72,15 +79,22 @@ const ResetPassword = () => {
       }
     } catch (error) {
       toast.error(error.message);
+    } finally {
+      setIsEmailLoading(false);
     }
   }
 
   const onSubmitOTP = async (e) =>
   {
     e.preventDefault();
-    const otpArray = inputRefs.current.map(input => input.value).join("");
-    setOtp(otpArray);
-    setIsOtpVerified(true);
+    try {
+      setIsOtpLoading(true);
+      const otpArray = inputRefs.current.map(input => input.value).join("");
+      setOtp(otpArray);
+      setIsOtpVerified(true);
+    } finally {
+      setIsOtpLoading(false);
+    }
   }
 
   return (
@@ -111,8 +125,22 @@ const ResetPassword = () => {
             />
           </div>
 
-          <button className="w-full py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-900 text-white rounded-full mt-3 cursor-pointer">
-            Submit
+          <button 
+            type="submit"
+            disabled={isEmailLoading}
+            className="w-full py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-900 text-white rounded-full mt-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+          >
+            {isEmailLoading ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Sending OTP...
+              </>
+            ) : (
+              "Submit"
+            )}
           </button>
         </form>
       )}
@@ -144,8 +172,22 @@ const ResetPassword = () => {
                 />
               ))}
           </div>
-          <button className="w-full py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-900 text-white rounded-full cursor-pointer">
-            Submit
+          <button 
+            type="submit"
+            disabled={isOtpLoading}
+            className="w-full py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-900 text-white rounded-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+          >
+            {isOtpLoading ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Verifying...
+              </>
+            ) : (
+              "Submit"
+            )}
           </button>
         </form>
       )}
@@ -169,8 +211,22 @@ const ResetPassword = () => {
             />
           </div>
 
-          <button className="w-full py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-900 text-white rounded-full mt-3 cursor-pointer">
-            Submit
+          <button 
+            type="submit"
+            disabled={isResetLoading}
+            className="w-full py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-900 text-white rounded-full mt-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+          >
+            {isResetLoading ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Resetting Password...
+              </>
+            ) : (
+              "Submit"
+            )}
           </button>
         </form>
       )}
