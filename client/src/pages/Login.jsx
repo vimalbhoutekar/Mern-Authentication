@@ -29,7 +29,7 @@ const Login = () => {
         console.log(data);
         if (data.success) {
           setIsLoggedin(true);
-          getUserData();
+          await getUserData();
           toast.success(data.message);
           navigate("/");
         } else {
@@ -43,7 +43,7 @@ const Login = () => {
         });
         if (data.success) {
           setIsLoggedin(true);
-          getUserData();
+          await getUserData();
           toast.success(data.message);
           navigate("/");
         } else {
@@ -58,105 +58,152 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to-purple-500">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
+      </div>
+
+      {/* Logo */}
       <img
         onClick={() => navigate("/")}
         src={assets.logo}
-        alt=""
-        className="absolute left-5 sm:left-20 top-5 w-28 sm:w-32 cursor-pointer"
+        alt="Logo"
+        className="absolute left-4 sm:left-8 top-6 w-24 sm:w-32 cursor-pointer hover:scale-105 transition-transform duration-300 z-10"
       />
-      <div className="bg-slate-900 p-10 rounded-lg shadow-lg w-full sm:w-96 text-indigo-300 text-sm ">
-        <h2 className="text-3xl font-semibold text-white text-center mb-3">
-          {state === "Sign Up" ? "Create an Account" : "Login to Your Account!"}
-        </h2>
-        <p className="text-center text-sm mb-6 ">
-          {state === "Sign Up"
-            ? "Please fill in the details to create an account."
-            : "Please enter your credentials to access your account."}
-        </p>
-        <form onSubmit={onSubmitHandler}>
+
+      {/* Main Card */}
+      <div className="w-full max-w-md relative z-10">
+        <div className="bg-white/10 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/20 p-8 sm:p-10">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
+              {state === "Sign Up" ? "Create Account" : "Welcome Back"}
+            </h2>
+            <p className="text-gray-300 text-sm">
+              {state === "Sign Up"
+                ? "Join us and secure your account"
+                : "Sign in to continue"}
+            </p>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={onSubmitHandler} className="space-y-5">
           {state === "Sign Up" && (
-            <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
-              <img src={assets.person_icon} alt="" />
-              <input
-                onChange={(e) => setName(e.target.value)}
-                className="bg-transparent outline-none text-white"
-                type="text"
-                value={name}
-                name="name"
-                placeholder="Full Name"
-                required
-              />
+            <div className="relative group">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg blur opacity-0 group-hover:opacity-30 transition duration-300"></div>
+              <div className="relative flex items-center gap-3 w-full px-5 py-3 rounded-lg bg-white/5 border border-white/10 focus-within:border-purple-500/50 transition">
+                <img src={assets.person_icon} alt="" className="w-5 h-5" />
+                <input
+                  onChange={(e) => setName(e.target.value)}
+                  className="bg-transparent outline-none text-white placeholder-gray-400 w-full"
+                  type="text"
+                  value={name}
+                  name="name"
+                  placeholder="Full Name"
+                  required
+                />
+              </div>
             </div>
           )}
 
-          <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
-            <img src={assets.mail_icon} alt="" />
-            <input
-              onChange={(e) => setEmail(e.target.value)}
-              className="bg-transparent outline-none text-white"
-              type="email"
-              name="email"
-              placeholder="Email"
-              required
-            />
+          <div className="relative group">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg blur opacity-0 group-hover:opacity-30 transition duration-300"></div>
+            <div className="relative flex items-center gap-3 w-full px-5 py-3 rounded-lg bg-white/5 border border-white/10 focus-within:border-purple-500/50 transition">
+              <img src={assets.mail_icon} alt="" className="w-5 h-5" />
+              <input
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-transparent outline-none text-white placeholder-gray-400 w-full"
+                type="email"
+                name="email"
+                placeholder="Email Address"
+                required
+              />
+            </div>
           </div>
-          <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
-            <img src={assets.lock_icon} alt="" />
-            <input
-              onChange={(e) => setPassword(e.target.value)}
-              className="bg-transparent outline-none text-white"
-              type="password"
-              name="password"
-              placeholder="Password"
-              required
-            />
+
+          <div className="relative group">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg blur opacity-0 group-hover:opacity-30 transition duration-300"></div>
+            <div className="relative flex items-center gap-3 w-full px-5 py-3 rounded-lg bg-white/5 border border-white/10 focus-within:border-purple-500/50 transition">
+              <img src={assets.lock_icon} alt="" className="w-5 h-5" />
+              <input
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-transparent outline-none text-white placeholder-gray-400 w-full"
+                type="password"
+                name="password"
+                placeholder="Password"
+                required
+              />
+            </div>
           </div>
-          <p
-            onClick={() => navigate("/reset-password")}
-            className="text-center text-indigo-500 mb-4 cursor-pointer"
-          >
-            Forget Password?
-          </p>
+          {state === "Login" && (
+            <div className="text-right mb-6">
+              <p
+                onClick={() => navigate("/reset-password")}
+                className="text-sm text-purple-400 hover:text-purple-300 cursor-pointer transition duration-200"
+              >
+                Forgot your password?
+              </p>
+            </div>
+          )}
+
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-2.5 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-900 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition duration-200 shadow-lg hover:shadow-purple-500/50 gap-2"
           >
             {isLoading ? (
               <>
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                {state === "Sign Up" ? "Creating..." : "Logging in..."}
+                {state === "Sign Up" ? "Creating Account..." : "Signing In..."}
               </>
             ) : (
-              state === "Sign Up" ? "Create Account" : "Login"
+              state === "Sign Up" ? "Create Account" : "Sign In"
             )}
           </button>
-        </form>
-        {state === "Sign Up" ? (
-          <p className="text-gray-400 text-center text-xs mt-4 ">
-            Already have an account?{" "}
-            <span
-              onClick={() => setState("Login")}
-              className="text-blue-400 cursor-pointer underline "
-            >
-              Login here
-            </span>
-          </p>
-        ) : (
-          <p className="text-gray-400 text-center text-xs mt-4 ">
-            Don't have an account?{" "}
-            <span
-              onClick={() => setState("Sign Up")}
-              className="text-blue-400 cursor-pointer underline "
-            >
-              Sign Up
-            </span>
-          </p>
-        )}
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 my-6">
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+            <span className="text-gray-400 text-xs">OR</span>
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+          </div>
+
+          {/* Toggle */}
+          <div className="text-center">
+            {state === "Sign Up" ? (
+              <p className="text-gray-300 text-sm">
+                Already have an account?{" "}
+                <span
+                  onClick={() => setState("Login")}
+                  className="text-purple-400 hover:text-purple-300 cursor-pointer font-semibold transition duration-200"
+                >
+                  Sign In
+                </span>
+              </p>
+            ) : (
+              <p className="text-gray-300 text-sm">
+                Don't have an account?{" "}
+                <span
+                  onClick={() => setState("Sign Up")}
+                  className="text-purple-400 hover:text-purple-300 cursor-pointer font-semibold transition duration-200"
+                >
+                  Create One
+                </span>
+              </p>
+            )}
+          </div>
+          </form>
+        </div>
+
+        {/* Footer Note */}
+        <p className="text-center text-gray-400 text-xs mt-6">
+          🔒 Your data is secure and encrypted
+        </p>
       </div>
     </div>
   );

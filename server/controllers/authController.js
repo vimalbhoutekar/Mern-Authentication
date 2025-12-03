@@ -31,7 +31,7 @@ export const register = async (req, res) => {
             maxAge: 24 * 60 * 60 * 1000 // 1 day
         });
 
-        // Sending Welcome Email 
+        // Sending Welcome Email (async in background - don't wait for it)
         const transporter = getTransporter();
 
         const mailOptions = {
@@ -41,7 +41,10 @@ export const register = async (req, res) => {
             html: getWelcomeEmailTemplate(name, email),
         };
 
-        await transporter.sendMail(mailOptions);
+        // Send email in background without blocking response
+        transporter.sendMail(mailOptions).catch(err => {
+            console.error('Welcome email failed:', err);
+        });
 
         return res.status(201).json({ success: true, message: "User registered successfully" });
     }
@@ -122,7 +125,10 @@ export const sendVerifyOtp = async (req, res) => {
         };
 
         const transporter = getTransporter();
-        await transporter.sendMail(mailOptions);
+        // Send email in background without blocking response
+        transporter.sendMail(mailOptions).catch(err => {
+            console.error('Verification email failed:', err);
+        });
         return res.status(200).json({ success: true, message: "Verification OTP sent successfully" });
     } catch (error) {
         return res.status(500).json({ success: false, message: "Internal Server Error" });
@@ -197,7 +203,10 @@ export const sendResetOtp = async (req,res) =>
         };
 
         const transporter = getTransporter();
-        await transporter.sendMail(mailOptions);
+        // Send email in background without blocking response
+        transporter.sendMail(mailOptions).catch(err => {
+            console.error('Password reset email failed:', err);
+        });
         return res.status(200).json({ success: true, message: "Password reset OTP sent successfully" });
     } catch (error) {
         return res.status(500).json({ success: false, message: "Internal Server Error" });
@@ -234,4 +243,29 @@ export const resetPassword = async (req,res) =>
     } catch (error) {
         return res.status(500).json({ success: false, message: "Internal Server Error" });
     }  
+}
+
+// Verify Reset OTP (used before allowing password reset form)
+export const verifyResetOtp = async (req, res) => {
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+        return res.status(400).json({ success: false, message: "Email and OTP are required" });
+    }
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+        if (!user.resetOtp || user.resetOtp !== otp) {
+            return res.status(400).json({ success: false, message: "Invalid OTP" });
+        }
+        if (user.resetOtpExpireAt < Date.now()) {
+            return res.status(400).json({ success: false, message: "OTP expired" });
+        }
+        // OTP valid
+        return res.status(200).json({ success: true, message: "OTP verified" });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
 }

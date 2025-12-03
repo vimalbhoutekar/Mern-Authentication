@@ -34,7 +34,7 @@ export const AppContextProvider = ({ children }) => {
         const { data } = await axios.get(`${backendUrl}/api/auth/is-auth`);
         if (data.success) {
           setIsLoggedin(true);
-          getUserData();
+          await getUserData();
           setUserData(data.userData);
         } else {
           setIsLoggedin(false);
