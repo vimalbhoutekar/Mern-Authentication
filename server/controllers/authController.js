@@ -190,6 +190,14 @@ export const sendResetOtp = async (req,res) =>
             return res.status(404).json({ success: false, message: "User not found" });
         }
 
+         // 🔍 DEBUGGING: Environment variables check
+        console.log('=== EMAIL DEBUGGING ===');
+        console.log('SMTP_USER:', process.env.SMTP_USER ? 'Set ✓' : 'Missing ✗');
+        console.log('SMTP_PASS:', process.env.SMTP_PASS ? 'Set ✓' : 'Missing ✗');
+        console.log('SENDER_EMAIL:', process.env.SENDER_EMAIL);
+        console.log('Sending to:', user.email);
+        console.log('=====================');
+
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         user.resetOtp = otp;
         user.resetOtpExpireAt = Date.now() + 10 * 60 * 1000; // OTP valid for 10 minutes
